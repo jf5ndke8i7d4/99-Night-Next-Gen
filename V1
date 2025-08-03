@@ -18,7 +18,7 @@ local SpinFind_StrongHold = false
 local Open_All_Chest = false
 task.spawn(function()
 	wait(1)
-	queue_on_teleport(string.format([[loadstring(game:HttpGet('https://raw.githubusercontent.com/jf5ndke8i7d4/99-Night-in-the-Forset/refs/heads/main/test'))()]]))
+	queue_on_teleport(string.format([[loadstring(game:HttpGet('https://raw.githubusercontent.com/jf5ndke8i7d4/99-Night-Next-Gen/refs/heads/main/V1'))()]]))
 	local Go_Back_To_Lobby = 0
 	while wait(1) do
 		if Go_Back_To_Lobby > 2400 then
