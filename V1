@@ -150,6 +150,10 @@ else--InGame
 	
 	local StrongHold_Locate = nil
 	
+	if workspace:WaitForChild("Map"):WaitForChild("Foliage") then
+		workspace:WaitForChild("Map"):WaitForChild("Foliage"):Destroy()
+	end
+	
 	local function MakeTextButton(Parent, Size, Posi, BGtran, Color, Text)
 		local NewFrame = Instance.new("TextButton", Parent)
 		NewFrame.Position = Posi
@@ -276,7 +280,6 @@ else--InGame
 				else
 					CountCheck = 10
 				end
-				print("CountCheck "..CountCheck)
 				if tonumber(Count.Text) == (NowMeDiamon + CountCheck) then--CountCheck = 10 / 5
 					repeat
 						humanoid.Health = 0
@@ -286,23 +289,15 @@ else--InGame
 					game:GetService("TeleportService"):Teleport(79546208627805)
 				end
 			end
-			--print("")
-			--print("Tick_Log_Delete " .. math.floor(tonumber(Tick_Log_Delete)))
-			--print("")
 			if math.floor(tonumber(Tick_Log_Delete)) > 150 and StrongHold_Locate then
-				--print("")
-				--print("               Open All Chest in Map                    ")
 				if math.floor(tonumber(Tick_Log_Delete)) < 400 then
 					if Chang_Open_All_Chest == false then
-						Open_All_Chest = true
+						--Open_All_Chest = true
 						Chang_Open_All_Chest = true
 					end
-					--print("Open_All_Chest = true")
 				else
 					Open_All_Chest = false
-					--print("Open_All_Chest = false")
 				end
-				--print("")
 			end
 		end
 	end)
@@ -316,20 +311,27 @@ else--InGame
 		return false
 	end
 	task.spawn(function()
-		while wait(1) do
+		while wait(3) do
+			print("")
+			print("Tick_Log_Delete " .. math.floor(tonumber(Tick_Log_Delete)))
+			print("")
 			if Open_All_Chest == true then
+				
+				print(" Loop Open Chest Work ")
+			
 				for _, item2 in ipairs(Items:GetChildren()) do
-					if item2 and matchesAllowedKeyword(item2.Name, {"Chest"}) and item2.PrimaryPart then
+					if matchesAllowedKeyword(item2.Name, {"Chest"}) then
 						pcall(function()
 							repeat
 								wait(0.3)
 							until item2.PrimaryPart.ProximityAttachment.ProximityInteraction
 							local Prox = item2.PrimaryPart.ProximityAttachment.ProximityInteraction
-							
+
 							humanoid.HipHeight = 16
 							HMNRT.CFrame = CFrame.new(Prox.WorldPosition) * CFrame.new(0,16,0)
-							wait(0.8)
+							wait(0.2)
 							fireproximityprompt(Prox)
+							wait(0.2)
 							humanoid.HipHeight = 0
 						end)
 					end
@@ -416,7 +418,7 @@ else--InGame
 	local function BringItemWithItem2(item2)
 		pcall(function()
 			humanoid.HipHeight = 16
-			
+
 			HMNRT.CFrame = CFrame.new(item2.PrimaryPart.Position) * CFrame.new(0,16,0)
 			wait(FastBring_Delay)
 			wait(FastBring_Delay)
@@ -447,7 +449,7 @@ else--InGame
 			HMNRT.CFrame = OldCFrame_Bring
 			wait(FastBring_Delay)
 			StopDraggingItem:FireServer(item2)
-			
+
 			humanoid.HipHeight = 0
 		end)
 	end
@@ -515,7 +517,7 @@ else--InGame
 		while wait(1) do
 			if Auto_Add_Feul == true then
 				for _, Model in ipairs(workspace.Items:GetChildren()) do
-					if Model.Name == "Coal" or Model.Name == "Log" then
+					if matchesAllowedKeyword(Model.Name, {"Sapling", "Chair", "Coal", "Fuel Canister", "Log", "Oil Barrel"}) then
 						if matchesAllowedKeyword(tostring(Fire_TextLabel.Text), {"Level 5"}) then
 							if AutoFarmGems == false then
 								Create_Log("Bonfire Is level 5 ")
@@ -554,7 +556,7 @@ else--InGame
 	task.spawn(function()
 		local ToolDamageObject = game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):FindFirstChild("ToolDamageObject")
 		while wait(0.2) do
-			if Kill_Aura_Farm == true and StrongHold_Locate then
+			if Kill_Aura_Farm == true and StrongHold_Locate  and Open_All_Chest == false then
 				for _, obj in pairs(workspace.Characters:GetDescendants()) do
 					pcall(function()
 						if obj.Name == "Cultist" or obj.Name == "Crossbow Cultist" 
@@ -562,17 +564,15 @@ else--InGame
 							if obj:IsA("Model") and obj:FindFirstChild("NPC") and obj:FindFirstChild("HumanoidRootPart") then
 								local dist = (obj.HumanoidRootPart.Position - StrongHold_Locate.PrimaryPart.Position).Magnitude
 								if dist <= 120 and obj then
-									pcall(function()
-										local RootPart = obj:FindFirstChild("HumanoidRootPart")
-										if OnTopEnameis == true and RootPart then
-											HMNRT.CFrame = RootPart.CFrame * CFrame.new(0,67,0)
-										end
-										if RootPart and ToolDamageObject then
-											local Kill_args = {obj,player:WaitForChild("Inventory"):WaitForChild("Old Axe"),"3_8880410317",
-												CFrame.new(RootPart.Position.X, RootPart.Position.Y, RootPart.Position.Z, 0.6, 0.3, -0.6, -2.5, 0.9, 0.4, 0.7, -0.2, 0.6)}
-											ToolDamageObject:InvokeServer(unpack(Kill_args))
-										end
-									end)
+									local RootPart = obj:FindFirstChild("HumanoidRootPart")
+									if OnTopEnameis == true and RootPart then
+										HMNRT.CFrame = RootPart.CFrame * CFrame.new(0,67,0)
+									end
+									if RootPart and ToolDamageObject then
+										local Kill_args = {obj,player:WaitForChild("Inventory"):WaitForChild("Old Axe"),"3_8880410317",
+											CFrame.new(RootPart.Position.X, RootPart.Position.Y, RootPart.Position.Z, 0.6, 0.3, -0.6, -2.5, 0.9, 0.4, 0.7, -0.2, 0.6)}
+										ToolDamageObject:InvokeServer(unpack(Kill_args))
+									end
 								end
 							end	
 						end
